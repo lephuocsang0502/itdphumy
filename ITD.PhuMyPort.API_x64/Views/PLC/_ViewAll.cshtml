@@ -1,0 +1,65 @@
+﻿@model IEnumerable<ITD.PhuMyPort.DataAccess.Models.PLC>
+@{
+    ViewData["Title"] = "_ViewAll";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <!-- Advanced Tables -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                PLCs
+            </div>
+            <div class="panel-body">
+                <button class="btn btn-primary" style="margin-bottom:10px" onclick="showInPopup('@Url.Action("Create", "PLC",  null, Context.Request.Scheme)', 'Create new PLC')">Create new PLC</button>
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>Code</th>
+                                <th>IP</th>
+                                <th>Barrier</th>
+                                <th>Workplace</th>
+                                <th style="width:200px;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td id="code">
+                                        @Html.DisplayFor(modelItem => item.Code)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.IP)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Barrier)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Workplace.Name)
+                                    </td>
+
+                                    <td>
+                                        <button style="float:left; margin-right: 5px;" class="btn btn-success" onclick="showInPopup('@Url.Action("Edit", "PLC", new { id = item.Code}, Context.Request.Scheme)', 'Update PLC')">Edit</button>
+                                        <form style="float:left; margin-right: 5px;" asp-action="Delete" asp-route-id="@item.Code" onsubmit="return jQueryAjaxDelete(this);" class="d-inline">
+                                            <input type="submit" class="btn btn-danger" value="Delete" />
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Page level plugins -->
+<script src="~/assets/datatables/jquery.dataTables.min.js"></script>
+<script src="~/assets/datatables/dataTables.bootstrap4.min.js"></script>
+
+<!-- Page level custom scripts -->
+<script src="~/assets/datatables/datatables-demo.js"></script>
+
+

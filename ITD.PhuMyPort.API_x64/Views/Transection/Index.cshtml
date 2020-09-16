@@ -1,0 +1,803 @@
+﻿
+
+@{
+    ViewBag.Title = "Index1";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="http://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="html2pdf.bundle.min.js"></script>
+
+<script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+<script src="~/js/mustache.min.js"></script>
+<script src="~/assets/js/jquery.tableToExcel.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+
+
+
+<!--JS Zoom Image-->
+<script src="https://cdn.jsdelivr.net/gh/igorlino/elevatezoom-plus@1.2.3/src/jquery.ez-plus.js"></script>
+<script src="~/assets/datatables/datatables-demo.js"></script>
+<script src="~/assets/datatables/datatables-Transection.js"></script>
+<!--Call data to dataTable--->
+<script src="~/js/jquery.twbsPagination.min.js"></script>
+<!----đây là gọi thư viện chart--->
+<script src="~/js/Chart.min.js"></script>
+<script src="~/js/pieChar.js"></script>
+
+
+<script id="data-template" type="x-tmpl-mustache">
+
+    <tr id="{{Date}}">
+        <td>
+            <a href="#" class="btn-active" data-id="{{Date}}" style="font-size: 12px; color: black">
+                <div class="blog-card-left">
+                    <div class="item-left item-left-1">
+                        <img class="img-thumbnail" src="data:image/jpeg;base64,{{Images}}" />
+                    </div>
+                    <div class="item-left item-left-2">
+
+                        <div class="flex-item-left">
+                            <label>Biển kiểm soát:</label>
+                            <label style="color:#0866C6"> {{Plate}} </label>
+                        </div>
+                        {{{Result}}}
+
+                        <div class="flex-item-left">
+                            <label>Thời gian: {{Time}} </label>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </td>
+        <td hidden>{{Date}}</td>
+    </tr>
+   
+</script>
+@*<script id="data-template2" type="x-tmpl-mustache">
+    <tr id="{{Date}}">
+
+        <td>{{Plate}}</td>
+        <td>{{{Result}}}</td>
+        <td>{{Time}}</td>
+    </tr>
+</script>*@
+    <body>
+        <div class="container">
+            @*<div class="row" >
+                <table id="dataTable" class="table">
+                    <thead>
+                        <tr>
+
+                            <th>Biển số</th>
+                            <th>Trạng thái</th>
+                            <th>thời gian</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tblData2">
+                    </tbody>
+                </table>
+            </div>*@
+
+            <!-- basic modal -->
+            <div class="modal fade" id="thongke" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">THỐNG KÊ</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <canvas id="myPieChart" class="chart-height"> </canvas>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="container-fluid flex-container-fluid ">
+            <div class="panel panel-default ">
+                <div class="panel-heading">
+                    HẬU KIỂM
+                </div>
+                <div class="panel-body">
+
+                    <div class="flex-container">
+                        <div class="flex-item-row func-1">
+                            <input class="form-control" type="text" name="datetimes" />
+                        </div>
+                        <div class="flex-item-row func-2">
+                            <input class="form-control" type="text" id="txtNameS" placeholder="Vui lòng nhập biển số ..." />
+                        </div>
+                        <div class="flex-item-row func-3">
+                            <select class="form-control" id="ddlStatusS">
+                                <option value="">All</option>
+                                <option value="1">Giống</option>
+                                <option value="2">Không Giống</option>
+                                <option value="0">Chưa Duyệt</option>
+                                <option value="3">Không có hình</option>
+                            </select>
+                        </div>
+                        <div class="flex-item-row func-3">
+
+                            <select class="form-control" id="cbPlate">
+                                <option value="">Chọn điều kiện</option>
+                                <option value="5">Nhỏ hơn 6 kí tự</option>
+                                <option value="6">Lớn hơn hoặc bằng 6 kí tự </option>
+                            </select>
+
+                        </div>
+                        <div class="flex-item-row func-4">
+                            <button class="btn btn-default" id="btnSearch">Tìm kiếm</button>
+                        </div>
+                        <div class="flex-item-row func-5">
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#thongke">Thống kê</button>
+                        </div>
+                        <div class="flex-item-row func-6">
+                            <a class="btn btn-default" href="/Transection/Create">Add Transaction</a>
+                        </div>
+                        <div class="flex-item-row func-6">
+                            <a class="btn btn-default" href="/Transection/Save">Add DB</a>
+                        </div>
+
+                    </div>
+
+
+                    <div class="row">
+                        <div class="flex-container">
+                            <div class="item item1">
+                                <table id="dataTableCard" class="table-item1 select">
+                                    <thead>
+                                        <tr>
+                                            <th hidden></th>
+                                            <th hidden></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tblData"></tbody>
+                                </table>
+
+                                <div class="flex-item" style="color:black">
+                                    <div class="pagination" id="pagination"> </div>
+                                </div>
+                            </div>
+
+
+                            <div class="item item2">
+                                <div class="row" id="date">
+                                    <div class="flex-container">
+                                        <div class="item-detail item1-detail">
+                                            <div id="img"></div>
+                                        </div>
+                                        <div class="item-detail item2-detail">
+                                            <div class="flex-container-list" id="check">
+
+                                                <br /><div class="flex-item" id="pl"></div>
+
+                                                <div class="flex-item" id="platecar"></div>
+
+                                                <br /> <div class="flex-item" id="dat"></div>
+
+                                                <div class="flex-item" id="datetime"></div>
+
+                                                <br /><div class="flex-item" id="chstatus" style="color:black"></div>
+
+                                                <div class="flex-item" style="color:black">
+                                                    <ul class="radio" id="ratio" style="margin-left:-40px"></ul>
+                                                </div>
+                                                <div class="flex-item" id="bton" style="text-align:center"></div>
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </body>
+
+    <!---Call Modal-->
+    <script>
+        $('#thongke').modal(options);
+
+        var options = {
+            'show': true,
+            'backdrop': 'static'
+        }
+    </script>
+
+    <script>
+        var arrayList = load();
+        var homeconfig = {
+
+            currentIndex: -1,
+            pageSize: 10,
+            pageIndex: 1,
+        }
+        function deleteEmployee(id) {
+            $.ajax({
+                url: '/Home/Delete',
+                data: {
+                    id: id
+                },
+                type: 'POST',
+                dataType: 'json',
+                success: function (response) {
+                    if (response.status == true) {
+                        bootbox.alert("Delete Success", function () {
+                            loadData(true);
+                        });
+                    }
+                    else {
+                        bootbox.alert(response.message);
+                    }
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+            });
+        };
+        function loadDetail(id) {
+            $.ajax({
+                url: '/Home/GetDetail',
+                data: {
+                    id: id
+                },
+                type: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    if (response.status == true) {
+                        var data = response.data;
+                        $('#hidID').val(data.ID);
+                        $('#txtName').val(data.Name);
+                        $('#txtSalary').val(data.Salary);
+                        $('#ckStatus').prop('checked', data.Status);
+                    }
+                    else {
+                        bootbox.alert(response.message);
+                    }
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+            });
+        };
+        function saveData() {
+            var name = $('#txtName').val();
+            var salary = parseFloat($('#txtSalary').val());
+            var status = $('#ckStatus').prop('checked');
+            var id = parseInt($('#hidID').val());
+            var employee = {
+                Name: name,
+                Salary: salary,
+                Status: status,
+                ID: id
+            }
+            $.ajax({
+                url: '/Home/SaveData',
+                data: {
+                    strEmployee: JSON.stringify(employee)
+                },
+                type: 'POST',
+                dataType: 'json',
+                success: function (response) {
+                    if (response.status == true) {
+                        bootbox.alert("Save Success", function () {
+                            $('#modalAddUpdate').modal('hide');
+                            loadData(true);
+                        });
+
+                    }
+                    else {
+                        bootbox.alert(response.message);
+                    }
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+            });
+        };
+        function resetForm() {
+            $('#hidID').val('0');
+            $('#txtName').val('');
+            $('txtSalary').val(0);
+            $('#ckStatus').prop('checked', true);
+        };
+        function updateSalary(id, value) {
+            var data = {
+                ID: id,
+                Salary: value
+            };
+            $.ajax({
+                url: '/Transection/Update',
+                type: 'POST',
+                dataType: 'json',
+                data: { model: JSON.stringify(data) },
+                success: function (response) {
+                    if (response.status) {
+                        bootbox.alert("Update success");
+                    }
+                    else {
+                        bootbox.alert(response.message);
+                    }
+                }
+            })
+        }
+        function load() {
+            $.ajax({
+                url: "/Transection/LoadToArray",
+                data: { status },
+                dataType: "json",
+                type: "GET",
+                success: function (response) {
+                    arrayList = response.status;
+
+                    return arrayList;
+                }
+            });
+
+        };
+
+
+        var homeController = {
+            init: function () {
+
+                homeController.loadData();
+                homeController.registerEvent();
+            },
+            registerEvent: function () {
+
+                $('#frmSaveData').validate({
+                    rules: {
+                        txtName: {
+                            required: true,
+                            minlength: 5
+                        },
+                        txtSalary: {
+                            required: true,
+                            number: true,
+                            min: 0
+                        }
+                    },
+                    messages: {
+                        txtName: {
+                            required: "Bạn phải nhập tên",
+                            minlength: "Tên phải lớn hơn 5 ký tự"
+                        },
+                        txtSalary: {
+                            required: "Bạn phải nhập lương",
+                            number: "Lương phải là số",
+                            min: "Lương của bạn phải lớn hơn hoặc bằng 0"
+                        }
+                    }
+                });
+                $('.txtSalary').off('keypress').on('keypress', function (e) {
+                    if (e.which == 13) {
+                        var id = $(this).data('id');
+                        var value = $(this).val();
+
+                        updateSalary(id, value);
+                    }
+                });
+                $('#txtNameS').off('keypress').on('keypress', function (e) {
+                    if (e.which == 13) {
+                        homeController.loadData(true);
+                    }
+                });
+                $('#btnAddNew').off('click').on('click', function () {
+                    $('#modalAddUpdate').modal('show');
+                    resetForm();
+                });
+                $('#btnSave').off('click').on('click', function () {
+                    if ($('#frmSaveData').valid()) {
+                        saveData();
+                    }
+                });
+                $('#btnSearch').off('click').on('click', function () {
+                    homeController.loadData(true);
+                });
+                $('#btnReset').off('click').on('click', function () {
+                    $('#txtNameS').val('');
+                    $('#ddlStatusS').val('');
+                    loadData(true);
+                });
+                $('.btn-edit').off('click').on('click', function () {
+                    $('#modalAddUpdate').modal('show');
+                    var id = $(this).data('id');
+                    loadDetail(id);
+                });
+                $('.btn-delete').off('click').on('click', function () {
+                    var id = $(this).data('id');
+                    bootbox.confirm("Are you sure to delete this employee?", function (result) {
+                        deleteEmployee(id);
+                    });
+                });
+                $('.btn-active').off('click').on('click', function (e) {
+                    e.preventDefault();
+
+                    var btn = $(this);
+                    var id = btn.data('id');
+                    currentIndex = arrayList.findIndex(p => p.date == id);
+
+                    homeController.edit(id);
+
+                });
+                $('#bton').off('click').on('click', function (e) {
+
+                    if ($("input[type='radio'].form-check-input").is(':checked')) {
+                        var b = $(".form-check-input:checked");
+                    }
+                    var result = $(b).val();
+                    var num = $(b).data('id');
+                    var id = num.toString();
+
+                    homeController.a(id, result);
+
+
+
+
+                });
+                $('input[name="datetimes"]').daterangepicker({
+                    timePicker: true,
+                    startDate: moment().startOf('hour'),
+                    endDate: moment().startOf('hour').add(32, 'hour'),
+                    locale: {
+                        format: 'DD/MM/YYYY HH:mm:ss'
+                    }
+
+                });
+                $('input[name="datetimes"]').on('apply.daterangepicker', function (ev, picker) {
+                    var start_Date = picker.startDate.format('DD/MM/YYYY HH:mm:ss');
+                    var end_Date = picker.endDate.format('DD/MM/YYYY HH:mm:ss');
+                    homeController.loadData(true, start_Date, end_Date);
+
+                });
+            },
+            edit: function (id) {
+                $.ajax({
+                    url: "/Transection/Edit",
+                    data: { id: id },
+                    dataType: "json",
+                    type: "POST",
+                    success: function (response) {
+                        if (response.status != null) {
+                            var html = '';
+                            var ratio = '';
+                            var img = '';
+                            var datetime = '';
+                            var platecar = '';
+                            var bton = '';
+                            var chstatus = '';
+                            var pl = '';
+                            var dat = '';
+                            var src = response.a;
+                            var dateTime = response.status.date;
+                            var year = dateTime.substring(0, 4);
+                            var month = dateTime.substring(4, 6);
+                            var day = dateTime.substring(6, 8);
+                            var hour = dateTime.substring(8, 10);
+                            var min = dateTime.substring(10, 12);
+                            var sec = dateTime.substring(12, 14);
+                            var mili = dateTime.substring(14, 16);
+                            var cvdate = new Date(year, month - 1, day, hour, min, sec, mili);
+
+                            img += '<img class="img-detail" id="zoom_01"  data-zoom-image="data:image/jpeg;base64,' + src + '" src="data:image/jpeg;base64,' + src + '" style="border-radius:5px"/><br>'
+                            $('#img').html(img);
+
+                            pl += '<div style="color:black; font-size:16px; font-weight:bolder"> Biển kiểm soát: </div>'
+                            $('#pl').html(pl);
+
+                            platecar += '<input  type="text" class="form-control" style="font-size:16px; color:#0866C6; font-weight:bolder" value="' + response.status.plate + '" disabled/>'
+                            $('#platecar').html(platecar);
+
+                            dat += '<div style="color:black; font-size:16px; font-weight:bolder">Thời gian: </div>'
+                            $('#dat').html(dat);
+
+                            datetime += '<input name="date" class="form-control"  style="font-size:16px"  type="text" value="' + cvdate.toUTCString() + '"disabled/>'
+                            $('#datetime').html(datetime);
+
+                            chstatus += '<div style="text-align:left; font-size:16px; font-weight:bolder">Thay đổi trạng thái:</div>'
+                            $('#chstatus').html(chstatus);
+
+                            ratio += '<div class="radio"><label class="radio-inline" ><input class="form-check-input" type = "radio" name="res"  data-id = "' + response.status.date + '" value = "1" '
+                            if (response.status.result == 1)
+                                ratio += ' checked'
+                            ratio += '>Giống</label></div> <div class="radio"><label class="radio-inline" ><input class="form-check-input" name="res" type = "radio"  data-id = "' + response.status.date + '" value = "2" '
+                            if (response.status.result == 2)
+                                ratio += ' checked'
+                            ratio += '>Không giống</label></div> <div class="radio"><label class="radio-inline" ><input class="form-check-input" type="radio" name="res" data-id="' + response.status.date + '" value="3" '
+                            if (response.status.result == 3)
+                                ratio += ' checked'
+                            ratio += '>Không có hình</label></div>'
+                            $('#ratio').html(ratio);
+
+                            bton += '<button  data-id="' + response.status.date + '" class="btn btn-success" >Cập nhật</button>'
+                            $('#bton').html(bton);
+                        }
+                        else {
+                            console.log("Không có")
+                        }
+
+                        /**Zoom Img**/
+                        $('#zoom_01').ezPlus({
+                            zoomType: 'lens',
+                            lensShape: 'round',
+                            lensSize: 200
+
+                        });
+
+                    }
+                });
+            },
+            load: function () {
+                $.ajax({
+                    url: "/Transection/LoadToArray",
+                    data: { status },
+                    dataType: "json",
+                    type: "GET",
+                    success: function (response) {
+                        arrayList = response.status;
+
+                        return arrayList;
+                    }
+                });
+
+            },
+
+            /**Statis**/
+            getResult: function () {
+                $.ajax({
+                    url: "/Transection/Same",
+                    dataType: "json",
+                    type: "GET",
+                    success: function (response) {
+                        var html = '';
+                        var template = $('#data-result').html();
+
+                        html += Mustache.render(template, {
+                            Same: response.dataSame,
+                            NotSame: response.dataNotSame,
+                            NoImg: response.dataNoImg,
+                            Unapprove: response.dataUnapprove
+                        });
+                        $('#getResult').html(html);
+                    }
+                });
+            },
+            /****/
+
+            a: function (id, result) {
+
+                var cartList = {
+                    Result: result,
+                    Date: id
+                };
+                $.ajax({
+                    url: '/Transection/Submit',
+                    data: { cartModel: JSON.stringify(cartList) },
+                    dataType: 'json',
+                    type: 'POST',
+                    success: function (response) {
+                        if (response.status) {
+
+                            homeController.loadData();
+                            homeController.getResult();
+
+                        }
+                        else {
+                            alert(response.message);
+                        }
+                    }
+                });
+
+            },
+            loadData: function (changePageSize, start_date, end_date) {
+                var name = $('#txtNameS').val();
+                var status = $('#ddlStatusS').val();
+                var cbPlate = $('#cbPlate').val();
+
+                $.ajax({
+                    url: '/Transection/LoadData',
+                    type: 'GET',
+                    data: {
+                        name: name,
+                        status: status,
+                        cbPlate: cbPlate,
+                        page: homeconfig.pageIndex,
+                        pageSize: homeconfig.pageSize,
+                        start_date: start_date,
+                        end_date: end_date
+
+                    },
+                    dataType: 'json',
+                    success: function (response) {
+                        if (response.data.length > 0) {
+
+                            var data = response.data;
+                            var html = '';
+                            var html2 = '';
+                            function kq(result) {
+
+                                if (result == 1) {
+                                    return '<div class="flex-item-left">'
+                                        + '<label>Trạng thái: </label >'
+                                        + '<label style="color:#1E8449"> Giống</label>'
+                                        + '</div>'
+
+                                }
+                                if (result == 2) {
+                                    return '<div class="flex-item-left">'
+                                        + '<label>Trạng thái: </label>'
+                                        + '<label style="color:#E04B00"> Không giống</label>'
+                                        + '</div>'
+                                }
+                                if (result == 0) {
+                                    return '<div class="flex-item-left">'
+                                        + '<label>Trạng thái: </label >'
+                                        + '<label style="color:#E60004"> Chưa được duyệt</label>'
+                                        + '</div>'
+                                }
+                                if (result == 3) {
+                                    return ' <div class="flex-item">'
+                                        + '<label>Trạng thái: </label >'
+                                        + '<label style="color:#E04B00"> Không Có Hình</label>'
+                                        + '</div>'
+                                }
+                            }
+
+                            var template = $('#data-template').html();
+                            $.each(data, function (i, item) {
+
+                                var result = kq(item.result);
+                                html += Mustache.render(template, {
+                                    Date: item.date,
+                                    Time: item.time,
+                                    Plate: item.plate,
+                                    Images: item.images,
+                                    Result: result
+
+                                });
+                               
+
+                            });
+                            $('#tblData').html(html);                        
+                            homeController.paging(response.total, function () {
+                                homeController.loadData();
+                            }, changePageSize);
+                            homeController.registerEvent();
+                            return true;
+                        }
+                        else (response.data.length == 0)
+                        {
+                            var html = '<tr><td style="padding-left: 20px">No matching records found</td></tr>';
+                            $('#tblData').html(html);
+                            var pg = '<div class="row"><div class="row" style="padding: 0px; margin-left: 20px"><div class="dataTables_info" id="dataTable_info" role="status" aria-live="polite">Showing 0 to 0</div></div><div class="row"  style="padding: 0px; margin-left: 20px"><div class="dataTables_paginate paging_simple_numbers" id="dataTable_paginate"><ul class="pagination"><li class="paginate_button page-item previous disabled" id="dataTable_previous"><a href="#" aria-controls="dataTable" data-dt-idx="0" tabindex="0" class="page-link">Previous</a></li><li class="paginate_button page-item next disabled" id="dataTable_next"><a href="#" aria-controls="dataTable" data-dt-idx="1" tabindex="0" class="page-link">Next</a></li></ul></div></div></div>'
+                            $('#pagination').html(pg);
+                            homeController.registerEvent();
+                        }
+                    }
+                })
+            },
+            paging: function (totalRow, callback, changePageSize) {
+                var totalPage = Math.ceil(totalRow / homeconfig.pageSize);
+                //Unbind pagination if it existed or click change pagesize
+                if ($('#pagination a').length === 0 || changePageSize === true) {
+                    $('#pagination').empty();
+                    $('#pagination').removeData("twbs-pagination");
+                    $('#pagination').unbind("page");
+                }
+                $('#pagination').twbsPagination({
+
+                    totalPages: totalPage,
+                    visiblePages: 3,
+                    initiateStartPageClick: false,
+                    onPageClick: function (event, page) {
+                        homeconfig.pageIndex = page;
+                        setTimeout(callback, 200);
+                    }
+                });
+            }
+        }
+
+
+
+        /**Select list table**/
+        $(function () {
+            function print() {
+                var element = document.querySelector('#page-inner');
+                html2pdf(element);
+            }
+
+            let heightContent = $('.dataTables_scrollBody').height();
+            document.addEventListener('keydown', logKey);
+
+            function logKey(e) {
+                if (e.keyCode == 39)
+                    nextItem(e);
+                if (e.keyCode == 37)
+                    prevItem();
+            }
+            function nextItem(e) {
+                let item = $('#tblData tr.selected');
+                let index = item.index();
+                if (index == 9) return;
+                item.removeClass('selected').next().addClass('selected');
+                if (index * 122 > heightContent - 244)
+                    $('.dataTables_scrollBody').scrollTop(index * 122);
+
+            }
+            function prevItem() {
+                let item = $('#tblData tr.selected');
+                let index = item.index();
+                if (index == 0) return;
+                item.removeClass('selected').prev().addClass('selected');
+
+                $('.dataTables_scrollBody').scrollTop((index - 1) * 122);
+
+
+            }
+
+            let vt = $('#tblData').children();
+            console.log(vt);
+            $('#tblData tr').on('click', function () {
+                console.log();
+            })
+
+
+
+            $('#dataTableCard ').on('click', 'tr', function () {
+                $(this).toggleClass("selected");
+                //If only one row can be selected
+                $(this).siblings(".selected").removeClass("selected");
+                console.log($('#tblData'));
+            });
+        })
+
+
+        document.onkeydown = function (event) {
+
+            switch (event.keyCode) {
+                case 37:
+                    if (currentIndex > 0) {
+                        currentIndex--;
+                        var obj = arrayList[currentIndex];
+                        homeController.edit(obj.date);
+                    }
+                    break;
+
+                case 39:
+                    if (currentIndex < arrayList.length - 1) {
+                        currentIndex++;
+
+
+                        var obj = arrayList[currentIndex];
+                        homeController.edit(obj.date);
+                    }
+                    break;
+
+            }
+        };
+        homeController.init();
+
+
+    </script>
+
+
+
+
+
+

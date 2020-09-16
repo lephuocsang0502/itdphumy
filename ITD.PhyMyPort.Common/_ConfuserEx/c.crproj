@@ -1,0 +1,16 @@
+<project outputDir="C:\Data\Git\2020\CauPhuMy\ANPRService\ITD.ANPR.ConfigWeb\ITD.PhyMyPort.Common\obj\Release" baseDir="C:\Data\Git\2020\CauPhuMy\ANPRService\ITD.ANPR.ConfigWeb\ITD.PhyMyPort.Common\obj\Release" xmlns="http://confuser.codeplex.com">
+<rule pattern="true" />
+<module path="ITD.PhyMyPort.Common.dll">
+<rule pattern="true">
+<protection id="anti ildasm" />
+<protection id="anti tamper" />
+<protection id="constants" />
+<protection id="ctrl flow" />
+<protection id="anti dump" />
+<protection id="anti debug" />
+</rule>
+</module>
+<probePath>C:\Program Files\dotnet\packs\Microsoft.NETCore.App.Ref\3.1.0\ref\netcoreapp3.1</probePath>
+<probePath>C:\Users\SW\.nuget\packages\nlog\4.7.1\lib\netstandard2.0</probePath>
+<probePath>C:\Users\SW\.nuget\packages\system.drawing.common\4.7.0\ref\netcoreapp3.0</probePath>
+</project>

@@ -1,0 +1,10 @@
+﻿@model IEnumerable<ITD.PhuMyPort.DataAccess.Models.Camera>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div id="view-all">
+    @await Html.PartialAsync("_ViewAll", Model)
+</div>

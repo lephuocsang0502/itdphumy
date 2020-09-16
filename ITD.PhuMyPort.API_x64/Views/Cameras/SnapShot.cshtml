@@ -1,0 +1,12 @@
+﻿
+@{
+    Layout = null;
+}
+@if (ViewBag.ImageName != null)
+{
+    <img src="@Url.Content("~/SnapshotImages/" + ViewBag.ImageName)" style="max-width:565px" alt="SnapShot">
+}
+else
+{
+    <p style="color:red">Can not get SnapShot.</p>
+}

@@ -1,0 +1,183 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <title>ITD ANPR Config</title>
+    <link rel="icon" href="~/itd.ico">
+
+    <!-- jQuery library -->
+    <script src="~/assets/js/jquery/jquery.min.js"></script>
+
+    <link href="~/assets/card/card.css" rel="stylesheet" />
+
+    <!-- Bootstrap Styles-->
+    <link href="~/assets/css/bootstrap.css" rel="stylesheet" />
+    <!-- FontAwesome Styles-->
+    <link href="~/assets/css/font-awesome.css" rel="stylesheet" />
+    <!-- Custom Styles-->
+    <link href="~/assets/css/custom-styles.css" rel="stylesheet" />
+    <!-- Custom styles for this page -->
+    <link href="~/assets/datatables/dataTables.bootstrap4.min.css" rel="stylesheet" />
+
+    <!---Modal-->
+    <script type="text/javascript" src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script src="~/js/mustache.min.js"></script>
+
+</head>
+<script id="data-result" type="x-tmpl-mustache">
+    <div class="item-nav">
+        <div class="item-text-same">Giống: {{Same}}</div>
+    </div>
+    <div class="item-nav">
+        <div class="item-text-notsame">Không Giống: {{NotSame}}</div>
+    </div>
+    <div class="item-nav">
+        <div class="item-text-noimg">Không Có Hình: {{NoImg}}</div>
+
+    </div>
+    <div class="item-nav">
+        <div class="item-text-unapprove">Chưa Kiểm Duyệt: {{Unapprove}}</div>
+    </div>
+    <ul class="nav navbar-top-links navbar-right">
+        <!-- /.dropdown -->
+        <li class="dropdown" style="margin-right:10px">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">
+                <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
+            </a>
+            <ul class="dropdown-menu dropdown-user">
+                <li>
+                    <a href="@Url.Action("Logout", "Account")"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                </li>
+            </ul>
+            <!-- /.dropdown-user -->
+        </li>
+        <!-- /.dropdown -->
+    </ul>
+
+</script>
+<body style="margin:0;padding:0;overflow:hidden;">
+    <div id="wrapper">
+        <nav class="navbar navbar-default top-navbar" role="navigation">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".sidebar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="@Url.Action("Index", "Workplaces")"><strong>ITD ANPR Config</strong></a>
+
+            </div>
+
+            <div class="navbar-container">
+                <div class="flex-container-nav" id="getResult">
+
+
+
+
+
+
+                </div>
+            </div>
+        </nav>
+
+        <!--/. NAV TOP  -->
+        <nav class="navbar-default navbar-side" role="navigation">
+            <div id="sideNav" href=""><i class="fa fa-caret-right"></i></div>
+            <div class="sidebar-collapse">
+                <ul class="nav" id="main-menu">
+                    <li>
+                        <a href="@Url.Action("Index", "Workplaces")"><i class="fa fa-sitemap"></i>Workplaces</a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("Index", "Cameras")"><i class="fa fa-video-camera"></i>Cameras</a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("Index", "PLC")"><i class="fa fa-video-camera"></i>PLCs</a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("Index", "Transection")"><i class="fa fa-check"></i>Transection</a>
+                    </li>
+                    @*<li>
+                            <a href="@Url.Action("Index", "ANPRLog")"><i class="fa fa-file-text"></i>ANPR Logs</a>
+                        </li>*@
+                </ul>
+
+            </div>
+
+        </nav>
+        <!-- /. NAV SIDE  -->
+
+        <div id="page-wrapper">
+            <div id="page"></div>
+            <div id="page-inner">
+                @RenderBody()
+
+            </div>
+            <!-- /. PAGE INNER  -->
+        </div>
+        <!-- /. PAGE WRAPPER  -->
+
+    </div>
+    <!-- /. WRAPPER  -->
+    <!-- Popup Modal -->
+    <div class="modal" tabindex="-1" role="dialog" id="form-modal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Modal title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="margin-top:-20px">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Popup Modal for SnapShot -->
+    <div class="modal" tabindex="-1" role="dialog" id="form-modal-snapshot" style="padding-top:80px;">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Modal title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="margin-top:-20px">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap Js -->
+    <script src="~/assets/js/bootstrap.min.js"></script>
+
+    <!-- Metis Menu Js -->
+    <script src="~/assets/js/jquery.metisMenu.js"></script>
+
+    <!-- Custom Js -->
+    <script src="~/assets/js/custom-scripts.js" asp-append-version="true"></script>
+    <script src="~/assets/js/notify.min.js" asp-append-version="true"></script>
+
+    <!-- Page level plugins -->
+    <script src="~/assets/datatables/jquery.dataTables.min.js"></script>
+    <script src="~/assets/datatables/dataTables.bootstrap4.min.js"></script>
+
+    <!-- Page level custom scripts -->
+    @* <script src="~/assets/datatables/datatables-demo.js"></script>*@
+<script src="~/assets/js/layout.js"></script>
+
+   
+    @RenderSection("jsFooter", required: false)
+</body>
+
+</html>

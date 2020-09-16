@@ -1,0 +1,112 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ITD.PhuMyPort.API</name>
+    </assembly>
+    <members>
+        <member name="F:ITD.PhuMyPort.API.Controllers.ITDANPRServiceController.squenceId">
+            <summary>
+            định danh request tăng dần
+            </summary>
+        </member>
+        <member name="F:ITD.PhuMyPort.API.Controllers.ITDANPRServiceController.threadStarted">
+            <summary>
+            kiểm tra thread đã bắt đầu hay chưa
+            </summary>
+        </member>
+        <member name="F:ITD.PhuMyPort.API.Controllers.ITDANPRServiceController.requuestQueue">
+            <summary>
+            hàng đợi lệnh request nhận dạng
+            </summary>
+        </member>
+        <member name="F:ITD.PhuMyPort.API.Controllers.ITDANPRServiceController.responseQueue">
+            <summary>
+            danh sách kết quả nhận dạng
+            </summary>
+        </member>
+        <member name="F:ITD.PhuMyPort.API.Controllers.ITDANPRServiceController.recogTimeout">
+            <summary>
+            thời gian tối đa xử lý nhận dạng
+            </summary>
+        </member>
+        <member name="F:ITD.PhuMyPort.API.Controllers.ITDANPRServiceController.saveImageFlag">
+            <summary>
+            0: không lưu image temp, 1: lưu image
+            </summary>
+        </member>
+        <member name="F:ITD.PhuMyPort.API.Controllers.ITDANPRServiceController.isTest">
+            <summary>
+            testing flag
+            </summary>
+        </member>
+        <member name="F:ITD.PhuMyPort.API.Controllers.ITDANPRServiceController.ThreadProcess">
+            <summary>
+            thread xử lý nhận dạng
+            </summary>
+        </member>
+        <member name="M:ITD.PhuMyPort.API.Controllers.ITDANPRServiceController.Capture(ITD.PhuMyPort.DataAccess.Models.Camera)">
+            <summary>
+            snapshot image form camera
+            </summary>
+            <param name="camera"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ITD.PhuMyPort.API.ITDALPR.CorrectPlateNumber.SelectRecogResult(System.Collections.Generic.List{System.String})">
+            <summary>
+            Chon nhung ket qua gan giong bien so xe
+            </summary>
+            <param name="listResult"></param>
+            <returns></returns>
+        </member>
+        <member name="P:ITD.PhuMyPort.API.Models.ImageData.SequenceID">
+            <summary>
+            thứ tự hình ảnh
+            </summary>
+        </member>
+        <member name="P:ITD.PhuMyPort.API.Models.ImageData.Data">
+            <summary>
+            dữ liệu hình ảnh
+            </summary>
+        </member>
+        <member name="P:ITD.PhuMyPort.API.Models.PlateResult.SequenceID">
+            <summary>
+            thứ tự kết quả
+            </summary>
+        </member>
+        <member name="P:ITD.PhuMyPort.API.Models.PlateResult.Plate">
+            <summary>
+            biển số nhận được
+            </summary>
+        </member>
+        <member name="P:ITD.PhuMyPort.API.Models.PlateResult.PlateBox">
+            <summary>
+            vi tri bien so
+            </summary>
+        </member>
+        <member name="P:ITD.PhuMyPort.API.Models.Response.ErrorCode">
+            <summary>
+            mẫ lỗi
+            </summary>
+        </member>
+        <member name="P:ITD.PhuMyPort.API.Models.Response.ResponseData">
+            <summary>
+            dữ liệu biển số trả về
+            </summary>
+        </member>
+        <member name="P:ITD.PhuMyPort.API.Models.ResponseData.Plate">
+            <summary>
+            biển số xe trả về
+            </summary>
+        </member>
+        <member name="P:ITD.PhuMyPort.API.Models.ResponseData.Image">
+            <summary>
+            image string base64
+            </summary>
+        </member>
+        <member name="P:ITD.PhuMyPort.API.Models.ResponseData.PlateImage">
+            <summary>
+            image plate base64
+            </summary>        
+        </member>
+    </members>
+</doc>

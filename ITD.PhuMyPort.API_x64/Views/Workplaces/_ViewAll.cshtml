@@ -1,0 +1,78 @@
+﻿@model IEnumerable<ITD.PhuMyPort.DataAccess.Models.Workplace>
+@{
+    ViewData["Title"] = "_ViewAll";
+    var listCamera = (List<ITD.PhuMyPort.DataAccess.Models.Camera>)ViewBag.ListCamera;
+}
+<!-- DataTales Example -->
+<div class="row">
+    <div class="col-md-12">
+        <!-- Advanced Tables -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Workplaces
+            </div>
+            <div class="panel-body">
+                <button class="btn btn-primary" style="margin-bottom:10px" onclick="showInPopup('@Url.Action("Create", "Workplaces",  null, Context.Request.Scheme)', 'Create new workplace')">Create new workplace</button>
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>Code</th>
+                                <th>Name</th>
+                                <th>Camera : Status</th>
+
+                                <th>PLC IN</th>
+                                <th>PLC OUT</th>
+                                <th>PLC Status</th>
+
+                                <th style="width:150px;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                            <tr>
+                                <td id="@item.Code">
+                                    @Html.DisplayFor(modelItem => item.Code)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Name)
+                                </td>
+                                @foreach (var i in listCamera)
+                                {
+                                    if (i.WorkplaceCode == item.Code)
+                                    {
+                                        <td>
+                                            @i.IP
+                                        </td>
+                                    }
+
+                                }
+
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                    <button style="float:left; margin-right: 5px;" class="btn btn-success" onclick="showInPopup('@Url.Action("Edit", "Workplaces", new { id = item.Code}, Context.Request.Scheme)', 'Update workplace')">Edit</button>
+                                    <form style="float:left;" asp-action="Delete" asp-route-id="@item.Code" onsubmit="return jQueryAjaxDelete(this);" class="d-inline">
+                                        <input type="submit" class="btn btn-danger" value="Delete" />
+                                    </form>
+                                </td>
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Page level plugins -->
+<script src="~/assets/datatables/jquery.dataTables.min.js"></script>
+<script src="~/assets/datatables/dataTables.bootstrap4.min.js"></script>
+
+<!-- Page level custom scripts -->
+<script src="~/assets/datatables/datatables-demo.js"></script>
